@@ -19,5 +19,5 @@ let withData = captcha(data);
 let seq = (i: number) => (i + 1) % data.length;
 console.log(`Using sequential digit: ${withData(seq)}`);
 //part 2
-let halfway = (i: number) => (i + data.length / 2) % data.length
+let halfway = (i: number) => (i + data.length / 2) % data.length;
 console.log(`Using halfway digit:    ${withData(halfway)}`);
