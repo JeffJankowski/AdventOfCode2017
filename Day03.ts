@@ -1,92 +1,60 @@
-import fs = require('fs');
-
-function steps(target: number) {
+function mathSpiral(target: number) {
     // round up to nearest odd
     const base = 2 * Math.floor((Math.sqrt(target) + 1) / 2) + 1;
-    const subbase = base - 2;
-    const off = Math.floor(base / 2);
+    // find ring level
     const ring = Math.floor(base / 2);
-
-    if (target < subbase ** 2 + 1 + (base - 1)) {
-        const start = subbase ** 2 + 1;
-        const delta = target - start;
-        const y = delta - off + 1;
-        return ring + Math.abs(y);
-    } else if (target < subbase ** 2 + 1 + 2 * (base - 1)) {
-        const start = subbase ** 2 + 1 + (base - 1);
-        const delta = target - start;
-        const x = off - delta - 1;
-        return Math.abs(x) + ring;
-    } else if (target < (subbase ** 2 + 1 + 3 * (base - 1))) {
-        const start = subbase ** 2 + 1 + 2 * (base - 1);
-        const delta = target - start;
-        const y = off - delta - 1;
-        return ring + Math.abs(y);
-    } else {
-        const start = subbase ** 2 + 1 + 3 * (base - 1);
-        const delta = target - start;
-        const x = delta - off + 1;
-        return Math.abs(x) + ring;
-    }
+    // get offset from origin
+    const offset = ((target - ((base - 2) ** 2)) % (base - 1)) - ring;
+    return ring + Math.abs(offset);
 }
 
-const INPUT = 347991;
-console.log(`Sequential spiral: ${steps(INPUT)}`);
-
 class Grid {
-    private grid: { [coords: string]: number } = {};
+    private grid: { [coords: string]: number } = {'0,0': 1};
 
-    public sum([x, y]: [number, number]) {
-        return this.getVal([x + 1, y - 1]) + this.getVal([x + 1, y]) +
-            this.getVal([x + 1, y + 1]) + this.getVal([x, y - 1]) +
-            this.getVal([x, y + 1]) + this.getVal([x - 1, y - 1]) +
-            this.getVal([x - 1, y]) + this.getVal([x - 1, y + 1]);
-    }
-    public getVal([x, y]: [number, number]) {
-        return this.grid[this.coordStr(x, y)] || 0;
-    }
-    public setVal([x, y]: [number, number], val: number) {
-        this.grid[this.coordStr(x, y)] = val;
+    public calc([x, y]: [number, number]) {
+        const sum = this.sum([x, y]);
+        this.grid[`${x},${y}`] = sum;
+        return sum;
     }
 
-    private coordStr(x: number, y: number) { return`${x},${y}`; }
+    private sum([x, y]: [number, number]) {
+        let sum = 0;
+        for (let i = -1; i <= 1; i++) {
+            for (let j = -1; j <= 1; j++) {
+                sum += this.grid[`${x + i},${y + j}`] || 0;
+            }
+        }
+        return sum;
+    }
 }
 
 function sumSpiral(target: number) {
     const grid: Grid = new Grid();
-    grid.setVal([0, 0], 1);
     let last = 1;
-    let ring = 2;
+    let base = 2;
     while (last < target) {
-        const off = Math.floor(ring / 2);
-        for (let y = -off + 1; y <= off; y++) {
-            last = grid.sum([off, y]);
-            grid.setVal([off, y], last);
-            if (last >= target) { break; }
+        const off = Math.floor(base / 2);
+        for (let y = 1 - off; y <= off; y++) {
+            last = grid.calc([off, y]);
+            if (last >= target) { return last; }
         }
-        if (last >= target) { break; }
         for (let x = off - 1; x >= -off; x--) {
-            last = grid.sum([x, off]);
-            grid.setVal([x, off], last);
-            if (last >= target) { break; }
+            last = grid.calc([x, off]);
+            if (last >= target) { return last; }
         }
-        if (last >= target) { break; }
         for (let y = off - 1; y >= -off; y--) {
-            last = grid.sum([-off, y]);
-            grid.setVal([-off, y], last);
-            if (last >= target) { break; }
+            last = grid.calc([-off, y]);
+            if (last >= target) { return last; }
         }
-        if (last >= target) { break; }
-        for (let x = -off + 1; x <= off; x++) {
-            last = grid.sum([x, -off]);
-            grid.setVal([x, -off], last);
-            if (last >= target) { break; }
+        for (let x = 1 - off; x <= off; x++) {
+            last = grid.calc([x, -off]);
+            if (last >= target) { return last; }
         }
 
-        ring += 2;
+        base += 2;
     }
-
-    return last;
 }
 
+const INPUT = 347991;
+console.log(`Sequential spiral: ${mathSpiral(INPUT)}`);
 console.log(`First largest in sum spiral: ${sumSpiral(INPUT)}`);
