@@ -1,12 +1,12 @@
-import fs = require('fs');
-import comb = require('js-combinatorics');
+import fs = require("fs");
+import comb = require("js-combinatorics");
 
 function checksum(rows: number[][], func: (row: number[]) => number) {
     return rows.reduce((sum, row) => sum += func(row), 0);
 }
 
-const input = fs.readFileSync('data/day02.txt', 'utf8')
-    .split('\n')
+const input = fs.readFileSync("data/day02.txt", "utf8")
+    .split("\n")
     .map((row) => {
         return row.trim()
             .split(/\s/)

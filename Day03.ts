@@ -9,7 +9,7 @@ function mathSpiral(target: number) {
 }
 
 class Grid {
-    private grid: { [coords: string]: number } = {'0,0': 1};
+    private grid: { [coords: string]: number } = {"0,0": 1};
 
     public calc([x, y]: [number, number]) {
         const sum = this.sum([x, y]);

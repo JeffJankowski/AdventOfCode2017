@@ -1,4 +1,4 @@
-import fs = require('fs');
+import fs = require("fs");
 
 function captcha(data: string) {
     return (next: (n: number) => number) => {
@@ -12,7 +12,7 @@ function captcha(data: string) {
     };
 }
 
-const input = fs.readFileSync('data/day01.txt', 'utf8');
+const input = fs.readFileSync("data/day01.txt", "utf8");
 // trying out some partial application-style composition
 const withData = captcha(input);
 
