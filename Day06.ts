@@ -1,23 +1,12 @@
 import fs = require("fs");
 
-function firstMaxIndex(arr: number[]) {
-    let [maxI, maxVal] = [-1, -1];
-    for (let i = 0; i < arr.length; i++) {
-        if (arr[i] > maxVal) {
-            maxVal = arr[i];
-            maxI = i;
-        }
-    }
-    return maxI;
-}
-
 function redist(bank: number[]) {
-    let i = firstMaxIndex(bank);
-    let left = bank[i];
-    bank[i] = 0;
+    let maxI = bank.reduce((maxi, val, idx, arr) => val > arr[maxi] ? idx : maxi, 0);
+    let left = bank[maxI];
+    bank[maxI] = 0;
     for (; left > 0; left--) {
-        i = (i + 1) % bank.length;
-        bank[i]++;
+        maxI = (maxI + 1) % bank.length;
+        bank[maxI]++;
     }
 }
 
@@ -35,10 +24,10 @@ function redistributions(bank: number[]) {
         count++;
     }
 
-    return [count, count - (loopMap.get(str) || 0)];
+    return {total: count, loop: count - (loopMap.get(str) || 0)};
 }
 
 const data = fs.readFileSync("data/day06.txt", "utf8").split(/\s/).map((n) => parseInt(n, 10));
-const [total, loop] = redistributions(data);
+const {total, loop} = redistributions(data);
 console.log(`Redistributions before loop: ${total}`);
 console.log(`Redistributions in loop:     ${loop}`);
