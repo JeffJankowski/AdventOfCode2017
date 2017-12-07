@@ -1,6 +1,6 @@
 import fs = require("fs");
 
-function steps(instructions: number[], incrFunc = (n: number) => 1) {
+function steps(instructions: number[], incrFunc = (_: number) => 1) {
     const data = [...instructions];
     let pc = 0;
     let count = 0;
