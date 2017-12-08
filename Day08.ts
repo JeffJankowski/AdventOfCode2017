@@ -2,12 +2,12 @@ import fs = require("fs");
 
 const pattern = /^([a-z]+) (inc|dec) (-?[0-9]+) if ([a-z]+) (>|<|>=|<=|==|!=) (-?[0-9]+)$/;
 const evaluate: {[op: string]: (regVal: number, val: number) => boolean} = {
-    ">": (regVal: number, val: number) => regVal > val,
-    "<": (regVal: number, val: number) => regVal < val,
-    ">=": (regVal: number, val: number) => regVal >= val,
-    "<=": (regVal: number, val: number) => regVal <= val,
-    "==": (regVal: number, val: number) => regVal === val,
-    "!=": (regVal: number, val: number) => regVal !== val,
+    ">": (regVal, val) => regVal > val,
+    "<": (regVal, val) => regVal < val,
+    ">=": (regVal, val) => regVal >= val,
+    "<=": (regVal, val) => regVal <= val,
+    "==": (regVal, val) => regVal === val,
+    "!=": (regVal, val) => regVal !== val,
 };
 
 function process(line: string, map: Map<string, number>) {
