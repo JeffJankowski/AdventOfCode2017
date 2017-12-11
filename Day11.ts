@@ -1,25 +1,29 @@
 import fs = require("fs");
 
-function walk(dirs: string[]): [number, number] {
-    const score = (x: number, y: number) =>
-        Math.abs(x) + Math.abs(y) - Math.min(Math.abs(y), Math.ceil(Math.abs(x) / 2));
+interface Point {
+    x: number;
+    y: number;
+}
 
-    const NAV: {[dir: string]: (pos: [number, number]) => [number, number]} = {
-        n:  ([x, y]) => [x, y + 1],
-        s:  ([x, y]) => [x, y - 1],
-        nw: ([x, y]) => [x - 1, x % 2 === 0 ? y + 1 : y],
-        ne: ([x, y]) => [x + 1, x % 2 === 0 ? y + 1 : y],
-        sw: ([x, y]) => [x - 1, x % 2 !== 0 ? y - 1 : y],
-        se: ([x, y]) => [x + 1, x % 2 !== 0 ? y - 1 : y],
+function walk(dirs: string[]): [number, number] {
+    const score = (p: Point) =>
+        Math.abs(p.x) + Math.abs(p.y) - Math.min(Math.abs(p.y), Math.ceil(Math.abs(p.x) / 2));
+
+    const NAV: {[dir: string]: (pos: Point) => Point} = {
+        n:  (p) => ({x: p.x,     y: p.y + 1}),
+        s:  (p) => ({x: p.x,     y: p.y - 1}),
+        nw: (p) => ({x: p.x - 1, y: p.x % 2 === 0 ? p.y + 1 : p.y}),
+        ne: (p) => ({x: p.x + 1, y: p.x % 2 === 0 ? p.y + 1 : p.y}),
+        sw: (p) => ({x: p.x - 1, y: p.x % 2 !== 0 ? p.y - 1 : p.y}),
+        se: (p) => ({x: p.x + 1, y: p.x % 2 !== 0 ? p.y - 1 : p.y}),
     };
 
-    let curr: [number, number] = [0, 0];
-    let max = -Infinity;
+    let [curr, max]: [Point, number] = [{x: 0, y: 0}, -Infinity];
     for (const dir of dirs) {
         curr = NAV[dir](curr);
-        max = Math.max(max, score(curr[0], curr[1]));
+        max = Math.max(max, score(curr));
     }
-    return [score(curr[0], curr[1]), max];
+    return [score(curr), max];
 }
 
 const [lastScore, globalMax] = walk(fs.readFileSync("data/day11.txt", "utf8").split(","));
