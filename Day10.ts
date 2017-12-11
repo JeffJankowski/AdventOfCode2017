@@ -25,4 +25,4 @@ const SUFFIX = [17, 31, 73, 47, 23];
 const hardList = hash([...input].map((char) => char.charCodeAt(0)).concat(...SUFFIX), 64);
 const dense = [...Array(16)].map((_, i) =>
     hardList.slice(i * 16, (i + 1) * 16).reduce((xor, val) => xor ^ val, 0));
-console.log(`End hash: ${dense.map((n) => (n <= 16 ? "0" : "") + n.toString(16)).join("")}`);
+console.log(`End hash: ${dense.map((n) => n.toString(16).padStart(2, "0")).join("")}`);
