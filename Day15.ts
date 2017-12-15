@@ -3,29 +3,28 @@ function match(a: number, b: number) {
     return (a & MASK) === (b & MASK);
 }
 
-class Gen {
-    private readonly DIV = 2147483647;
-    constructor(readonly factor: number, public value: number, readonly multiple = 1) {  }
-    public gen() {
+function* generate(factor: number, value: number, multiple = 1) {
+    while (true) {
         do {
-            this.value = (this.value * this.factor) % this.DIV;
-        } while (this.value % this.multiple !== 0 );
-        return this.value;
+            value = (value * factor) % 2147483647;
+        } while (value % multiple !== 0 );
+        yield value;
     }
 }
 
 const [A_FACT, B_FACT] = [16807, 48271];
 const [A_VAL, B_VAL] = [512, 191];
-let [A, B] = [new Gen(A_FACT, A_VAL), new Gen(B_FACT, B_VAL)];
+
+let [A, B] = [generate(A_FACT, A_VAL), generate(B_FACT, B_VAL)];
 let matches = 0;
-for (let i = 0; i < (40 * 10 ** 6); i++) {
-    if (match(A.gen(), B.gen())) { matches++; }
+for (let i = 0; i < 40E6; i++) {
+    if (match(A.next().value, B.next().value)) { matches++; }
 }
 console.log(`Judges count: ${matches}`);
 
-[A, B] = [new Gen(A_FACT, A_VAL, 4), new Gen(B_FACT, B_VAL, 8)];
+[A, B] = [generate(A_FACT, A_VAL, 4), generate(B_FACT, B_VAL, 8)];
 matches = 0;
-for (let i = 0; i < (5 * 10 ** 6); i++) {
-    if (match(A.gen(), B.gen())) { matches++; }
+for (let i = 0; i < 5E6; i++) {
+    if (match(A.next().value, B.next().value)) { matches++; }
 }
 console.log(`Judges count (multiples): ${matches}`);
