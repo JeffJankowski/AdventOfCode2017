@@ -10,7 +10,8 @@
         "curly": [true],
         "no-bitwise": false,
         "interface-name": false,
-        "max-classes-per-file": false
+        "max-classes-per-file": false,
+        "forin": false
     },
     "rulesDirectory": []
 }
