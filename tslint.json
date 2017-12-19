@@ -9,7 +9,8 @@
         "quotemark": [true, "double"],
         "curly": [true],
         "no-bitwise": false,
-        "interface-name": false
+        "interface-name": false,
+        "max-classes-per-file": false
     },
     "rulesDirectory": []
 }
