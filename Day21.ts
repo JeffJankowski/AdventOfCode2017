@@ -11,11 +11,11 @@ function rotate(rows: string[]) {
 }
 
 function buildMap(rules: string[]) {
-    const map = new Map<string, string>();
+    const map = new Map<string, string[][]>();
     for (const rule of rules) {
         const [inp, out] = rule.split(" => ");
         let ruleRows = inp.split("/");
-        const outRule = out.split("/").join("");
+        const outRule = toImg(out.split("/").join(""));
         for (let rot = 0; rot < 4; rot++) {
             ruleRows = rotate(ruleRows);
             map.set(ruleRows.join(""), outRule);
@@ -50,28 +50,26 @@ function combine(sections: string[][][]) {
 }
 
 function generate(imageStr: string, iterations: number) {
-    let image = toImg(imageStr);
+    let img = toImg(imageStr);
     for (let iter = 0; iter < iterations; iter++) {
-        const size = image[0].length;
-        const divis = size % 2 === 0 ? 2 : 3;
+        const size = img[0].length;
+        const div = size % 2 === 0 ? 2 : 3;
         const sections: string[][][] = [];
-        for (let i = 0; i < (size / divis) ** 2; i++) {
-            const row = Math.floor((i * divis) / size) * divis;
-            const col = (i * divis) % size;
-            const section = [image[row].slice(col, col + divis), image[row + 1].slice(col, col + divis)];
-            if (divis === 3) {
-                section.push(image[row + 2].slice(col, col + divis));
-            }
-            const str = toStr(section);
-            const rpl = rulebook.get(str) || "FUCK";
-            sections.push(toImg(rpl));
+        for (let i = 0; i < (size / div) ** 2; i++) {
+            const [row, col] = [Math.floor((i * div) / size) * div, (i * div) % size];
+            const section = [img[row].slice(col, col + div), img[row + 1].slice(col, col + div)];
+            if (div === 3) { section.push(img[row + 2].slice(col, col + div)); }
+            sections.push(rulebook.get(toStr(section)) || [["FUCK"]]);
         }
-        image = combine(sections);
+        img = combine(sections);
     }
-    return Array<string>().concat(...image).filter((x) => x !== ".").length;
+    return img;
 }
 
+const count = (img: string[][]) => Array<string>().concat(...img).filter((x) => x !== ".").length;
+
 const rulebook = buildMap(fs.readFileSync("data/day21.txt", "utf8").split("\r\n"));
-const START = ".#...####";
-console.log(`Number of lit pixels after 5 iterations:  ${generate(START, 5)}`);
-console.log(`Number of lit pixels after 18 iterations: ${generate(START, 18)}`);
+let image = generate(".#...####", 5);
+console.log(`Number of lit pixels after 5 iterations:  ${count(image)}`);
+image = generate(toStr(image), 18 - 5);
+console.log(`Number of lit pixels after 18 iterations: ${count(image)}`);
