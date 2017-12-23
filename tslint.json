@@ -11,7 +11,8 @@
         "no-bitwise": false,
         "interface-name": false,
         "max-classes-per-file": false,
-        "forin": false
+        "forin": false,
+        "member-ordering": false
     },
     "rulesDirectory": []
 }
