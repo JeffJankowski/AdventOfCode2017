@@ -13,8 +13,7 @@ function build(pins: number, remaining: Comp[],
         const [strength, length] = build(c.portA === pins ? c.portB : c.portA, copy, compareFn);
         return [pins * 2 + strength, length + 1] as [number, number];
     });
-    const sorted = recurs.sort(compareFn);
-    return sorted[0];
+    return recurs.sort(compareFn)[0];
 }
 
 const components: Comp[] = fs.readFileSync("data/day24.txt", "utf8").split("\r\n").map((s) => {
@@ -23,6 +22,6 @@ const components: Comp[] = fs.readFileSync("data/day24.txt", "utf8").split("\r\n
 });
 
 const strongFn = ([strA, lenA]: [number, number], [strB, lenB]: [number, number]) => strB - strA;
-console.log(`Strongest bridge: ${build(0, components, strongFn).join(", (length):")}`);
+console.log(`Strongest bridge: ${build(0, components, strongFn).join("  (length):")}`);
 const lengthFn = ([strA, lenA]: [number, number], [strB, lenB]: [number, number]) => lenB - lenA || strB - strA;
-console.log(`Longest bridge:   ${build(0, components, lengthFn).join(", (length):")}`);
+console.log(`Longest bridge:   ${build(0, components, lengthFn).join("  (length):")}`);
